@@ -63,6 +63,15 @@ class Double(object):
      <Call args=('some argument',) kwargs={}>,
      <Call args=() kwargs={}>]
 
+    You can use the double as a mock by verifying calls.
+
+    >>> verify(double).called()
+    True
+    >>> verify(Double('my_double')).called()
+    Traceback (most recent call last):
+        ...
+    tdubs.VerificationError: expected 'my_double' to be called, but it wasn't
+
     """
     def __init__(self, _name=None, **kwargs):
         self._name = _name or ''
@@ -117,6 +126,7 @@ class Double(object):
 
         """
         return self._actual_calls
+
 
 calling = Double._stub_call
 calls = Double._get_calls
@@ -175,3 +185,21 @@ class Call(object):
     def returns(self, value):
         """Assign a specific return value to this call."""
         self.return_value = value
+
+
+class Verification(object):
+    def __init__(self, double):
+        self.double = double
+
+    def called(self):
+        if calls(self.double):
+            return True
+        raise VerificationError(
+            "expected '%s' to be called, but it wasn't" % self.double._name)
+
+
+verify = Verification
+
+
+class VerificationError(Exception):
+    pass
