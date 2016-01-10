@@ -67,6 +67,12 @@ class Double(object):
 
     >>> verify(double).called()
     True
+    >>> verify(double).called_with('some argument')
+    True
+    >>> verify(double).called_with('foo')
+    Traceback (most recent call last):
+        ...
+    tdubs.VerificationError: expected 'my_double' to be called with ('foo')
     >>> verify(Double('my_double')).called()
     Traceback (most recent call last):
         ...
@@ -172,6 +178,19 @@ class Call(object):
     def __eq__(self, other):
         return (self.args == other.args) and (self.kwargs == other.kwargs)
 
+    @property
+    def formatted_args(self):
+        """Format call arguments as a string.
+
+        >>> call = Call('arg1', 'arg2', kwarg1='kwarg1', kwarg2='kwarg2')
+        >>> call.formatted_args
+        ('arg1', 'arg2', kwarg2='kwarg2', kwarg1='kwarg1')
+
+        """
+        arg_reprs = list(map(repr, self.args))
+        kwarg_reprs = ['%s=%s' % (k, repr(v)) for k, v in self.kwargs.items()]
+        return '(%s)' % ', '.join(arg_reprs + kwarg_reprs)
+
     def passing(self, *args, **kwargs):
         """Assign expected call args/kwargs to this call.
 
@@ -197,6 +216,12 @@ class Verification(object):
         raise VerificationError(
             "expected '%s' to be called, but it wasn't" % self.double._name)
 
+    def called_with(self, *args, **kwargs):
+        expected_call = Call(*args, **kwargs)
+        if expected_call in calls(self.double):
+            return True
+        raise VerificationError("expected '%s' to be called with %s" % (
+            self.double._name, expected_call.formatted_args))
 
 verify = Verification
 
