@@ -21,9 +21,16 @@ class Double(object):
     >>> double.some_attribute
     'some value'
 
+    >>> double = Double('my_double', predefined_attribute='predefined value')
+    >>> double.predefined_attribute
+    'predefined value'
+
+    It can act like a dictionary.
+
     >>> double['some_key'] = 'some dict value'
     >>> double['some_key']
     'some dict value'
+
     >>> double['another_key'].foo = 'foo'
     >>> double['another_key'].foo
     'foo'
@@ -52,10 +59,12 @@ class Double(object):
     'some return value'
 
     """
-    def __init__(self, name=None):
-        self._name = name or ''
+    def __init__(self, _name=None, **kwargs):
+        self._name = _name or ''
         self._items = {}
         self._calls = QueryList(wrap=False)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def __repr__(self):
         return "Double(name='%s')" % self._name
