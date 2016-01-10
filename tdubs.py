@@ -24,6 +24,9 @@ class Double(object):
     >>> double['some_key'] = 'some dict value'
     >>> double['some_key']
     'some dict value'
+    >>> double['another_key'].foo = 'foo'
+    >>> double['another_key'].foo
+    'foo'
 
     You can stub direct calls.
 
@@ -63,7 +66,8 @@ class Double(object):
         return attribute
 
     def __getitem__(self, key):
-        return self._items.get(key, Double(key))
+        self._items.setdefault(key, Double(key))
+        return self._items[key]
 
     def __setitem__(self, key, value):
         self._items[key] = value
