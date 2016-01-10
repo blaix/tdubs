@@ -55,11 +55,20 @@ class Double(object):
     >>> double()
     'some return value'
 
+    Calls are recorded.
+
+    >>> from pprint import pprint
+    >>> pprint(calls(double))
+    [<Call args=() kwargs={}>,
+     <Call args=('some argument',) kwargs={}>,
+     <Call args=() kwargs={}>]
+
     """
     def __init__(self, _name=None, **kwargs):
         self._name = _name or ''
         self._items = {}
         self._stubbed_calls = []
+        self._actual_calls = []
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -80,6 +89,7 @@ class Double(object):
 
     def __call__(self, *args, **kwargs):
         call = Call(*args, **kwargs)
+        self._actual_calls.append(call)
         stubbed_call = next(
             (c for c in self._stubbed_calls if c == call), call)
         return stubbed_call.return_value
@@ -97,8 +107,19 @@ class Double(object):
         self._stubbed_calls.insert(0, call)
         return call
 
+    def _get_calls(self):
+        """Return list of call objects for every call made to the double.
+
+        This method is private to avoid conflicts with the object being
+        replaced in tests. It is accessible via the public api as:
+
+            calls(double)
+
+        """
+        return self._actual_calls
 
 calling = Double._stub_call
+calls = Double._get_calls
 
 
 class Call(object):
