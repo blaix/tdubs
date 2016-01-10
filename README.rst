@@ -23,7 +23,7 @@ Usage
 
     from tdubs import Double, calling
     
-    # Some method I want to test that uses a collaborator
+    # Something I want to test that uses a collaborator
     def get_article(article_repo, article_id):
         return article_repo.get(article_id)
 
