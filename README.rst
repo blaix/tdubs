@@ -7,7 +7,7 @@ Born out of my desire to use test doubles with these features:
 
 1. Treat the double as a callable with return values specific to the arguments passed in.
 2. Zero public attributes. To avoid conflicts with the object it's replacing in tests.
-3. Ability to verify calls after they are made (coming soon).
+3. Ability to verify calls, after they are made, without risk of false-positives (explanation and feature coming soon).
 
 Installation
 ------------
