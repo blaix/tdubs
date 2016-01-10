@@ -124,6 +124,14 @@ class Call(object):
     >>> call.return_value
     'value'
 
+    >>> call = Call('foo', bar='bar')
+    >>> call == Call('asdf', bar='bar')
+    False
+    >>> call == Call('foo', bar='asdf')
+    False
+    >>> call == Call('foo', bar='bar')
+    True
+
     """
     def __init__(self, *args, **kwargs):
         self.return_value = None
@@ -132,6 +140,9 @@ class Call(object):
 
     def __repr__(self):
         return '<Call args=%s kwargs=%s>' % (self.args, self.kwargs)
+
+    def __eq__(self, other):
+        return (self.args == other.args) and (self.kwargs == other.kwargs)
 
     def passing(self, *args, **kwargs):
         """Assign expected call args/kwargs to this call.
