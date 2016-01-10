@@ -1,6 +1,3 @@
-from querylist import QueryList
-
-
 class Double(object):
     """A test double.
 
@@ -62,7 +59,7 @@ class Double(object):
     def __init__(self, _name=None, **kwargs):
         self._name = _name or ''
         self._items = {}
-        self._calls = QueryList(wrap=False)
+        self._stubbed_calls = []
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -82,10 +79,10 @@ class Double(object):
         self._items[key] = value
 
     def __call__(self, *args, **kwargs):
-        try:
-            return self._calls.get(args=args, kwargs=kwargs).return_value
-        except QueryList.NotFound:
-            return Double('')
+        call = Call(*args, **kwargs)
+        stubbed_call = next(
+            (c for c in self._stubbed_calls if c == call), call)
+        return stubbed_call.return_value
 
     def _stub_call(self):
         """Stub a call to this double. Returns the Call object.
@@ -97,7 +94,7 @@ class Double(object):
 
         """
         call = Call()
-        self._calls.insert(0, call)
+        self._stubbed_calls.insert(0, call)
         return call
 
 
@@ -134,7 +131,7 @@ class Call(object):
 
     """
     def __init__(self, *args, **kwargs):
-        self.return_value = None
+        self.return_value = Double()
         self.args = args
         self.kwargs = kwargs
 

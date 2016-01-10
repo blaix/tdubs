@@ -1,5 +1,3 @@
-querylist==0.4.0
-
 # Development dependencies:
 flake8==2.5.0
 flake8-quotes==0.1.1
