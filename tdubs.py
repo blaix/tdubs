@@ -182,9 +182,9 @@ class Call(object):
     def formatted_args(self):
         """Format call arguments as a string.
 
-        >>> call = Call('arg1', 'arg2', kwarg1='kwarg1', kwarg2='kwarg2')
+        >>> call = Call('arg1', 'arg2', kwarg='kwarg')
         >>> call.formatted_args
-        ('arg1', 'arg2', kwarg2='kwarg2', kwarg1='kwarg1')
+        "('arg1', 'arg2', kwarg='kwarg')"
 
         """
         arg_reprs = list(map(repr, self.args))
