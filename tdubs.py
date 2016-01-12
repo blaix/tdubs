@@ -251,13 +251,25 @@ class Call(object):
 
         Returns self for the common case of chaining a call to returns().
 
+        >>> Call().passing('foo', bar='baz')
+        <Call args=('foo',) kwargs={'bar': 'baz'}>
+
         """
         self.args = args
         self.kwargs = kwargs
         return self
 
     def returns(self, value):
-        """Assign a specific return value to this call."""
+        """Assign a specific return value to this call.
+
+        >>> call = Call()
+        >>> call.return_value
+        <Mock ...>
+        >>> call.returns('foo')
+        >>> call.return_value
+        'foo'
+
+        """
         self.return_value = value
 
 
