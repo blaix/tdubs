@@ -26,7 +26,7 @@ class UnitTests(Nosetests):
     """Run test cases in the tests/ directory."""
 
     def get_args(self, *args, **kwargs):
-        return ['-x', '--with-doctest']
+        return ['-x', '--with-doctest', '--doctest-options=+ELLIPSIS']
 
 
 clear = ScreenClearer(all_files=True)
