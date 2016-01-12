@@ -90,6 +90,25 @@ Traceback (most recent call last):
     ...
 tdubs.VerificationError: expected <Mock ...> to be called, but it wasn't
 
+>>> mock = Mock()
+>>> verify(mock).not_called()
+True
+>>> mock()
+<Mock ...>
+>>> verify(mock).not_called()
+Traceback (most recent call last):
+    ...
+tdubs.VerificationError: expected <Mock ...> to not be called, but it was
+
+>>> verify(mock).not_called_with('foo')
+True
+>>> mock('foo')
+<Mock ...>
+>>> verify(mock).not_called_with('foo')
+Traceback (most recent call last):
+    ...
+tdubs.VerificationError: expected <Mock ...> to not be called with (...), ...
+
 """
 
 
@@ -269,6 +288,30 @@ class Verification(object):
         raise VerificationError(
             "expected %s to be called with %s, but it wasn't" % (
                 self.mock, expected_call.formatted_args))
+
+    def not_called(self):
+        """Return True if the mock was not called.
+
+        Otherwise raise VerificationError.
+
+        """
+        if calls(self.mock):
+            raise VerificationError(
+                'expected %s to not be called, but it was' % self.mock)
+        return True
+
+    def not_called_with(self, *args, **kwargs):
+        """Return True if mock was not called with the specified args/kwargs.
+
+        Otherwise raise VerificationError.
+
+        """
+        call = Call(*args, **kwargs)
+        if call in calls(self.mock):
+            raise VerificationError(
+                'expected %s to not be called with %s, but it was' % (
+                    self.mock, call.formatted_args))
+        return True
 
 verify = Verification
 
