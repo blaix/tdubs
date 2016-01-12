@@ -1,141 +1,177 @@
-class Double(object):
-    """A test double.
+"""A test double library.
 
-    >>> double = Double('my_double')
+>>> my_stub = Stub('my_stub')
 
-    Any interaction with it by default will return another double.
+All attribute and key lookups on a stub will return another stub.
 
-    >>> double.some_attribute
-    Double(name='some_attribute')
-    >>> double['some_key']
-    Double(name='some_key')
-    >>> double()
-    Double(name='')
+>>> my_stub.some_attribute
+<Stub name='some_attribute' ...>
+>>> my_stub['some_key']
+<Stub name='some_key' ...>
 
-    You can define explicit attributes.
+You can define explicit attributes.
 
-    >>> double.some_attribute = 'some value'
-    >>> double.some_attribute
-    'some value'
+>>> my_stub.some_attribute = 'some value'
+>>> my_stub.some_attribute
+'some value'
 
-    >>> double = Double('my_double', predefined_attribute='predefined value')
-    >>> double.predefined_attribute
-    'predefined value'
+>>> my_stub = Stub('my_stub', predefined_attribute='predefined value')
+>>> my_stub.predefined_attribute
+'predefined value'
 
-    It can act like a dictionary.
+It can act like a dictionary.
 
-    >>> double['some_key'] = 'some dict value'
-    >>> double['some_key']
-    'some dict value'
+>>> my_stub['some_key'] = 'some dict value'
+>>> my_stub['some_key']
+'some dict value'
 
-    >>> double['another_key'].foo = 'foo'
-    >>> double['another_key'].foo
-    'foo'
+>>> my_stub['another_key'].foo = 'foo'
+>>> my_stub['another_key'].foo
+'foo'
 
-    You can stub direct calls.
+You can stub direct calls.
 
-    >>> calling(double).returns('some return value')
-    >>> double()
-    'some return value'
+>>> my_stub()
+Traceback (most recent call last):
+    ...
+TypeError: <Stub name='my_stub' ...> is not callable
 
-    You can stub method calls.
+>>> calling(my_stub).returns('some return value')
+>>> my_stub()
+'some return value'
 
-    >>> calling(double.some_method).returns('some method result')
-    >>> double.some_method()
-    'some method result'
+You can stub method calls.
 
-    You can stub calls with specific arguments.
+>>> calling(my_stub.some_method).returns('some method result')
+>>> my_stub.some_method()
+'some method result'
 
-    >>> calling(double).passing('some argument').returns('specific value')
-    >>> double('some argument')
-    'specific value'
+You can stub calls with specific arguments.
 
-    When you do, the original stubs are retained.
+>>> calling(my_stub).passing('some argument').returns('specific value')
+>>> my_stub('some argument')
+'specific value'
 
-    >>> double()
-    'some return value'
+When you do, the original stubs are retained.
 
-    Calls are recorded.
+>>> my_stub()
+'some return value'
 
-    >>> from pprint import pprint
-    >>> pprint(calls(double))
-    [<Call args=() kwargs={}>,
-     <Call args=('some argument',) kwargs={}>,
-     <Call args=() kwargs={}>]
+If you want to verify calls, use a mock.
 
-    You can use the double as a mock by verifying calls.
+>>> my_mock = Mock('my_mock')
 
-    >>> verify(double).called()
-    True
-    >>> verify(double).called_with('some argument')
-    True
-    >>> verify(double).called_with('foo')
-    Traceback (most recent call last):
-        ...
-    tdubs.VerificationError: expected 'my_double' to be called with ('foo')
-    >>> verify(Double('my_double')).called()
-    Traceback (most recent call last):
-        ...
-    tdubs.VerificationError: expected 'my_double' to be called, but it wasn't
+``Mock`` extends ``Stub`` to be automatically callable without stubbing.
+Any call to a mock will return a new mock.
 
-    """
+>>> my_mock()
+<Mock ...>
+>>> my_mock('arg1', 'arg2', foo='bar')
+<Mock ...>
+
+All calls to a mock are recorded.
+
+>>> calls(my_mock)
+[<Call args=() kwargs={}>, <Call args=('arg1', 'arg2') kwargs={'foo': 'bar'}>]
+
+You can verify specific calls in your tests.
+
+>>> verify(my_mock).called()
+True
+>>> verify(my_mock).called_with('arg1', 'arg2', foo='bar')
+True
+>>> verify(my_mock).called_with('foo')
+Traceback (most recent call last):
+    ...
+tdubs.VerificationError: expected <Mock ...> to be called with ('foo'), ...
+>>> new_mock = Mock('new_mock')
+>>> verify(new_mock).called()
+Traceback (most recent call last):
+    ...
+tdubs.VerificationError: expected <Mock ...> to be called, but it wasn't
+
+"""
+
+
+class Stub(object):
     def __init__(self, _name=None, **kwargs):
         self._name = _name or ''
         self._items = {}
         self._stubbed_calls = []
-        self._actual_calls = []
         for key, value in kwargs.items():
             setattr(self, key, value)
 
     def __repr__(self):
-        return "Double(name='%s')" % self._name
+        return "<%s name='%s' id='%s'>" % (
+            self.classname, self._name, id(self))
+
+    @property
+    def classname(self):
+        return type(self).__name__
 
     def __getattr__(self, name):
-        attribute = Double(name)
+        attribute = type(self)(name)
         setattr(self, name, attribute)
         return attribute
 
     def __getitem__(self, key):
-        self._items.setdefault(key, Double(key))
+        self._items.setdefault(key, type(self)(key))
         return self._items[key]
 
     def __setitem__(self, key, value):
         self._items[key] = value
 
     def __call__(self, *args, **kwargs):
-        call = Call(*args, **kwargs)
-        self._actual_calls.append(call)
+        actual_call = Call(*args, **kwargs)
         stubbed_call = next(
-            (c for c in self._stubbed_calls if c == call), call)
+            (c for c in self._stubbed_calls if c == actual_call), None)
+        return self._handle_call(actual_call, stubbed_call)
+
+    def _handle_call(self, actual_call, stubbed_call):
+        if not stubbed_call:
+            raise TypeError('%s is not callable' % self)
         return stubbed_call.return_value
 
     def _stub_call(self):
-        """Stub a call to this double. Returns the Call object.
+        """Stub a call to this stub. Returns the Call object.
 
         This method is private to avoid conflicts with the object being
         replaced in tests. It is accessible via the public api as:
 
-            calling(double)
+            calling(stub)
 
         """
         call = Call()
         self._stubbed_calls.insert(0, call)
         return call
 
+
+calling = Stub._stub_call
+
+
+class Mock(Stub):
+    def __init__(self, *args, **kwargs):
+        super(Mock, self).__init__(*args, **kwargs)
+        self._actual_calls = []
+
+    def _handle_call(self, actual_call, stubbed_call):
+        self._actual_calls.append(actual_call)
+        use_call = stubbed_call or actual_call
+        return use_call.return_value
+
     def _get_calls(self):
-        """Return list of call objects for every call made to the double.
+        """Return list of call objects for every call made to the mock.
 
         This method is private to avoid conflicts with the object being
         replaced in tests. It is accessible via the public api as:
 
-            calls(double)
+            calls(mock)
 
         """
         return self._actual_calls
 
 
-calling = Double._stub_call
-calls = Double._get_calls
+calls = Mock._get_calls
 
 
 class Call(object):
@@ -168,7 +204,7 @@ class Call(object):
 
     """
     def __init__(self, *args, **kwargs):
-        self.return_value = Double()
+        self.return_value = Mock()
         self.args = args
         self.kwargs = kwargs
 
@@ -207,21 +243,32 @@ class Call(object):
 
 
 class Verification(object):
-    def __init__(self, double):
-        self.double = double
+    def __init__(self, mock):
+        self.mock = mock
 
     def called(self):
-        if calls(self.double):
+        """Return True if the mock was called.
+
+        Otherwise raise VerificationError.
+
+        """
+        if calls(self.mock):
             return True
         raise VerificationError(
-            "expected '%s' to be called, but it wasn't" % self.double._name)
+            "expected %s to be called, but it wasn't" % self.mock)
 
     def called_with(self, *args, **kwargs):
+        """Return True if the mock was called with the specified args/kwargs.
+
+        Otherwise raise VerificationError.
+
+        """
         expected_call = Call(*args, **kwargs)
-        if expected_call in calls(self.double):
+        if expected_call in calls(self.mock):
             return True
-        raise VerificationError("expected '%s' to be called with %s" % (
-            self.double._name, expected_call.formatted_args))
+        raise VerificationError(
+            "expected %s to be called with %s, but it wasn't" % (
+                self.mock, expected_call.formatted_args))
 
 verify = Verification
 
