@@ -3,6 +3,10 @@ TDubs
 
 A test double library for python.
 
+.. contents::
+    :local:
+    :backlinks: none
+
 Example
 -------
 
