@@ -44,7 +44,7 @@ Example
             self.create_resource('bad data')
             verify(self.repository.insert).not_called()
 
-See ``tdubs.Double`` for full usage.
+See ``tdubs.py`` for full usage.
 
 Why?
 ----
