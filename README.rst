@@ -102,16 +102,16 @@ This is what I wanted out of a test double library:
    conflicts with the object being replaced in tests. For example::
 
        Since all attributes on a mock return a new mock,
-       this will always evaluate to True (notice the typo?):
+       this will always evaluate to True (notice the typos?):
        
-       >>> from unittest.mock import Mock
-       >>> Mock().assert_callled_with('foo')
+       >>> from unittest import mock
+       >>> mock.Mock().asssert_called_with('foo')  # oops!
        <Mock ...>
 
        Not possible with tdubs, since verifications happen on a new object:
         
        >>> from tdubs import Mock, verify
-       >>> verify(Mock()).callled_with('foo')
+       >>> verify(Mock()).callled_with('foo')  # oops!
        Traceback (most recent call last):
             ...
        AttributeError: 'Verification' object has no attribute 'callled_with'
