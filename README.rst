@@ -3,17 +3,6 @@ TDubs
 
 A test double library for python.
 
-Born out of my desire to use test doubles with these features:
-
-1. Treat the double as a callable with return values specific to the arguments passed in.
-2. Zero public attributes. To avoid conflicts with the object it's replacing in tests.
-3. Ability to verify calls, after they are made, without risk of false-positives
-
-Installation
-------------
-
-Coming soon. For now, just download ``tdubs.py``.
-
 Example
 -------
 
@@ -55,10 +44,56 @@ Example
             self.create_resource('bad data')
             verify(self.repository.insert).not_called()
 
-Usage
------
-
 See ``tdubs.Double`` for full usage.
+
+Why?
+----
+
+Python 3 already has `Mock` in its standard library, and there are several
+other third-party test double packages, but none felt like the right fit for
+how I like to TDD.
+
+This is what I wanted out of a test double library:
+
+1. The ability to treat a double as a callable with return values specific to
+   the arguments passed in. This is so I can treat stubs as pure stubs, without
+   needing to verify I passed the right arguments to my query methods. You can
+   see that in action in the example above.
+
+2. The ability to verify calls after they are made, without setting up
+   expectations first.  This is so my tests read like a story::
+
+        # set up:
+        my_mock = Mock()
+
+        # execute:
+        my_func(my_mock)
+
+        # verify:
+        verify(my_mock).called()
+
+3. Test doubles with zero public attributes from the library. This is to avoid
+   conflicts with the object being replaced in tests. For example::
+
+       Since all attributes on a mock return a new mock,
+       this will always evaluate to True (notice the typo?):
+       
+       >>> from unittest.mock import Mock
+       >>> Mock().assert_callled_with('foo')
+       <Mock ...>
+
+       Not possible with tdubs, since verifications happen on a new object:
+        
+       >>> from tdubs import Mock, verify
+       >>> verify(Mock()).callled_with('foo')
+       Traceback (most recent call last):
+            ...
+       AttributeError: 'Verification' object has no attribute 'callled_with'
+
+Installation
+------------
+
+Coming soon. For now, just download ``tdubs.py``.
 
 Development
 -----------
@@ -71,7 +106,7 @@ Install dependencies::
 
 Run the tests::
 
-    nosetests --with-doctest --doctest-options=+ELLIPSIS
+    nosetests --with-doctest --doctest-options=+ELLIPSIS --doctest-extension=rst
 
 Lint and test the code automatically when changes are made (see ``tube.py``)::
 

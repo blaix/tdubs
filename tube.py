@@ -26,7 +26,8 @@ class UnitTests(Nosetests):
     """Run test cases in the tests/ directory."""
 
     def get_args(self, *args, **kwargs):
-        return ['-x', '--with-doctest', '--doctest-options=+ELLIPSIS']
+        return ['-x', '--with-doctest', '--doctest-options=+ELLIPSIS',
+                '--doctest-extension=rst']
 
 
 clear = ScreenClearer(all_files=True)
@@ -34,7 +35,6 @@ lint_style = Flake8(all_files=True)
 unit_tests = UnitTests(all_files=True)
 
 PATTERNS = (
-    (r'.*\.py$', [clear]),
-    (r'.*\.py$', [unit_tests], {'fail_fast': True}),
+    (r'.*\.(py|rst)$', [clear, unit_tests], {'fail_fast': True}),
     (r'.*\.py$', [lint_style], {'fail_fast': True}),
 )
