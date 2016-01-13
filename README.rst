@@ -58,9 +58,14 @@ or return value of some other object. For example, the behavior of the
 ``ResourceCreator`` above depends on the return value of
 ``validator.is_valid``, so I'm using a stub.
 
-You should use ``Mock`` when you only need to verify that something was called.
-For example, I need to verify if ``repository.insert`` was called with our
-data, so I'm using a mock.
+Stubs are not callable by default. You must explicitly stub a return value if
+you expect it to be called. This is to avoid false positives in your tests for
+behavior that may depend on the truthiness of that call.
+
+Mocks *are* callable by default, because they are designed to record calls for
+verification after execution. You should use ``Mock`` when you only need to
+verify that something was called.  For example, I need to verify whether or not
+``repository.insert`` was called with our data, so I'm using a mock.
 
 You can think of it this way: use ``Stub`` for *queries*, and ``Mock`` for
 *commands*.  If the separation isn't clear, spend some time thinking about your
