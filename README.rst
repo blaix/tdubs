@@ -17,36 +17,35 @@ Example
     from tdubs import Stub, Mock, calling, verify
 
 
-    # typically over-simplified example:
-    class ResourceCreator(object):
-        def __init__(self, validator, repository):
-            self.validator = validator
-            self.repository = repository
+    # The thing I want to test:
+    class Greeter(object):
 
-        def __call__(self, data):
-            if self.validator.is_valid(data):  # a query
-                self.repository.insert(data)   # a command
+        # tdubs works best with code that has injectable dependencies:
+        def __init__(self, prompter=None, printer=None):
+            self.prompter = prompter or input
+            self.printer = printer or print
+
+        def greet(self, greeting):
+            fname = self.prompter('First name:')
+            lname = self.prompter('Last name:')
+            self.printer('%s, %s %s!' % (greeting, fname, lname))
 
 
-    class TestResourceCreator(TestCase):
+    class TestGreeter(TestCase):
         def setUp(self):
             # use stubs to provide canned responses to queries:
-            validator = Stub()
-            calling(validator.is_valid).passing('good data').returns(True)
-            calling(validator.is_valid).passing('bad data').returns(False)
+            prompter = Stub()
+            calling(prompter).passing('First name:').returns('Justin')
+            calling(prompter).passing('Last name:').returns('Blake')
 
             # use mocks to verify commands:
-            self.repository = Mock()
+            self.printer = Mock()
 
-            self.create_resource = ResourceCreator(validator, self.repository)
+            self.greeter = Greeter(prompter, self.printer)
 
-        def test_inserts_valid_data(self):
-            self.create_resource('good data')
-            verify(self.repository.insert).called_with('good data')
-
-        def test_does_not_insert_invalid_data(self):
-            self.create_resource('bad data')
-            verify(self.repository.insert).not_called()
+        def test_prints_greeting_to_full_name(self):
+            self.greeter.greet('Greetings')
+            verify(self.printer).called_with('Greetings, Justin Blake!')
 
 See ``tdubs.py`` for full usage.
 
@@ -55,8 +54,8 @@ Stubs vs. Mocks
 
 You should use ``Stub`` when you are testing behavior that depends on the state
 or return value of some other object. For example, the behavior of the
-``ResourceCreator`` above depends on the return value of
-``validator.is_valid``, so I'm using a stub.
+``Greeter`` above depends on the return value of ``prompter``, so I'm using a
+stub.
 
 Stubs are not callable by default. You must explicitly stub a return value if
 you expect it to be called. This is to avoid false positives in your tests for
@@ -65,7 +64,7 @@ behavior that may depend on the truthiness of that call.
 Mocks *are* callable by default, because they are designed to record calls for
 verification after execution. You should use ``Mock`` when you only need to
 verify that something was called.  For example, I need to verify whether or not
-``repository.insert`` was called with our data, so I'm using a mock.
+``printer`` was called with the correct string, so I'm using a mock.
 
 You can think of it this way: use ``Stub`` for *queries*, and ``Mock`` for
 *commands*.  If the separation isn't clear, spend some time thinking about your
