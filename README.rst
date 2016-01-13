@@ -104,22 +104,26 @@ This is what I wanted out of a test double library:
         verify(my_mock).called()
 
 3. Test doubles with zero public attributes from the library. This is to avoid
-   conflicts with the object being replaced in tests. For example::
+   conflicts with the object being replaced in tests. For example:
 
-       Since all attributes on a mock return a new mock,
-       this will always evaluate to True (notice the typos?):
+   Since all attributes on a mock return a new mock, the following
+   assertion  will always evaluate to True::
        
        >>> from unittest import mock
        >>> mock.Mock().asssert_called_with('foo')  # oops!
        <Mock ...>
 
-       Not possible with tdubs, since verifications happen on a new object:
+   Notice the typo? If not, you may get a false positive in your test.
+
+   tdubs avoids this by using a new object for verifications::
         
        >>> from tdubs import Mock, verify
        >>> verify(Mock()).callled_with('foo')  # oops!
        Traceback (most recent call last):
             ...
        AttributeError: 'Verification' object has no attribute 'callled_with'
+
+   Notice the typo? If not, it doesn't matter. Python noticed!
 
 I also like the distinction between stubs and mocks (see `Stubs vs.  Mocks`_),
 but it's not one of the reasons I originally decided to write tdubs.
