@@ -23,8 +23,6 @@ class Isort(Helper):
 
 
 class UnitTests(Nosetests):
-    """Run test cases in the tests/ directory."""
-
     def get_args(self, *args, **kwargs):
         return ['-x', '--with-doctest', '--doctest-options=+ELLIPSIS',
                 '--doctest-extension=rst']
