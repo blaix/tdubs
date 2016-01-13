@@ -49,9 +49,8 @@ See ``tdubs.py`` for full usage.
 Why?
 ----
 
-Python 3 already has `Mock` in its standard library, and there are several
-other third-party test double packages, but none felt like the right fit for
-how I like to TDD.
+Python 3 already has ``unittest.mock``, and there are several other third-party
+test double packages, but none felt like the right fit for how I like to TDD.
 
 This is what I wanted out of a test double library:
 
