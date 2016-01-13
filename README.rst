@@ -30,12 +30,12 @@ Example
 
     class TestResourceCreator(TestCase):
         def setUp(self):
-            # stubs are great for providing canned responses to queries:
+            # use stubs to provide canned responses to queries:
             validator = Stub()
             calling(validator.is_valid).passing('good data').returns(True)
             calling(validator.is_valid).passing('bad data').returns(False)
 
-            # mocks are great for verfying commands:
+            # use mocks to verify commands:
             self.repository = Mock()
 
             self.create_resource = ResourceCreator(validator, self.repository)
