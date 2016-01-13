@@ -50,6 +50,29 @@ Example
 
 See ``tdubs.py`` for full usage.
 
+Stubs vs. Mocks
+---------------
+
+You should use ``Stub`` when you are testing behavior that depends on the state
+or return value of some other object. For example, the behavior of the
+``ResourceCreator`` above depends on the return value of
+``validator.is_valid``, so I'm using a stub.
+
+You should use ``Mock`` when you only need to verify that something was called.
+For example, I need to verify if ``repository.insert`` was called with our
+data, so I'm using a mock.
+
+You can think of it this way: use ``Stub`` for *queries*, and ``Mock`` for
+*commands*.  If the separation isn't clear, spend some time thinking about your
+design. Would it be better with distinct queries and commands? (If you really
+need both, use ``Mock``, since it extends ``Stub``).
+
+Further reading:
+
+- `Mocks aren't Stubs <http://martinfowler.com/articles/mocksArentStubs.html>`_
+- `The Little Mocker <https://blog.8thlight.com/uncle-bob/2014/05/14/TheLittleMocker.html>`_
+- `Mock Roles, not Objects <http://www.jmock.org/oopsla2004.pdf>`_
+
 Why?
 ----
 
@@ -92,6 +115,9 @@ This is what I wanted out of a test double library:
        Traceback (most recent call last):
             ...
        AttributeError: 'Verification' object has no attribute 'callled_with'
+
+I also like the distinction between stubs and mocks (see `Stubs vs.  Mocks`_),
+but it's not one of the reasons I originally decided to write tdubs.
 
 Installation
 ------------
