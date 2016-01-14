@@ -115,7 +115,7 @@ tdubs.VerificationError: expected <Mock ...> to not be called with (...), ...
 class Stub(object):
     def __init__(self, _name=None, **kwargs):
         self._name = _name or ''
-        self._items = {}
+        self._dict_items = {}
         self._stubbed_calls = []
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -134,11 +134,11 @@ class Stub(object):
         return attribute
 
     def __getitem__(self, key):
-        self._items.setdefault(key, type(self)(key))
-        return self._items[key]
+        self._dict_items.setdefault(key, type(self)(key))
+        return self._dict_items[key]
 
     def __setitem__(self, key, value):
-        self._items[key] = value
+        self._dict_items[key] = value
 
     def __call__(self, *args, **kwargs):
         actual_call = Call(*args, **kwargs)
