@@ -84,27 +84,27 @@ True
 Traceback (most recent call last):
     ...
 tdubs.VerificationError: expected <Mock ...> to be called with ('foo'), ...
+
 >>> new_mock = Mock('new_mock')
 >>> verify(new_mock).called()
 Traceback (most recent call last):
     ...
 tdubs.VerificationError: expected <Mock ...> to be called, but it wasn't
 
->>> mock = Mock()
->>> verify(mock).not_called()
+>>> verify(new_mock).not_called()
 True
->>> mock()
+>>> new_mock()
 <Mock ...>
->>> verify(mock).not_called()
+>>> verify(new_mock).not_called()
 Traceback (most recent call last):
     ...
 tdubs.VerificationError: expected <Mock ...> to not be called, but it was
 
->>> verify(mock).not_called_with('foo')
+>>> verify(new_mock).not_called_with('foo')
 True
->>> mock('foo')
+>>> new_mock('foo')
 <Mock ...>
->>> verify(mock).not_called_with('foo')
+>>> verify(new_mock).not_called_with('foo')
 Traceback (most recent call last):
     ...
 tdubs.VerificationError: expected <Mock ...> to not be called with (...), ...
