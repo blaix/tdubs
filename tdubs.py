@@ -34,7 +34,7 @@ You can stub direct calls.
 >>> my_stub()
 Traceback (most recent call last):
     ...
-TypeError: <Stub name='my_stub' ...> is not callable
+TypeError: <Stub name='my_stub' ...> is not callable ...
 
 >>> calling(my_stub).returns('some return value')
 >>> my_stub()
@@ -148,7 +148,8 @@ class Stub(object):
 
     def _handle_call(self, actual_call, stubbed_call):
         if not stubbed_call:
-            raise TypeError('%s is not callable' % self)
+            raise TypeError('%s is not callable with %s' % (
+                self, actual_call.formatted_args))
         return stubbed_call.return_value
 
     def _stub_call(self):
