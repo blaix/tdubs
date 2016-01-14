@@ -1,4 +1,10 @@
-"""Example test from the README."""
+"""Example test from the README.
+
+TODO: how to keep these in sync?
+
+More ellaborate tests are in doctests.
+
+"""
 from unittest import TestCase
 
 from tdubs import Stub, Mock, calling, verify
