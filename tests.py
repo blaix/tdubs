@@ -1,6 +1,8 @@
 """Example test from the README.
 
-TODO: how to keep these in sync?
+Make sure any changes here are also made there, and vice versa. Ideally we
+could just include this file in README.rst, but the include directive is not
+supported on github: https://github.com/github/markup/issues/172
 
 More ellaborate tests are in doctests.
 
