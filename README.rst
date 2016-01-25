@@ -200,8 +200,8 @@ Stubs vs. Mocks
 
 You should use ``Stub`` when you are testing behavior that depends on the state
 or return value of some other object. For example, the behavior of the
-``Greeter`` above depends on the return value of ``prompter``, so I'm using a
-stub.
+``Greeter`` in the `Example`_ above depends on the return value of
+``prompter``, so I'm using a stub.
 
 Stubs are not callable by default. You must explicitly stub a return value if
 you expect it to be called. This is to avoid false positives in your tests for
