@@ -256,7 +256,7 @@ You can verify that it was called with specific arguments::
         ...
     tdubs.VerificationError: expected <Mock ...> to be called with ('foo'), ...
 
-You can also verify that it was _not_ called::
+You can also verify that it was *not* called::
 
     >>> verify(new_mock).not_called()
     True
