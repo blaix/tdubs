@@ -235,11 +235,20 @@ All calls to a mock are recorded::
     >>> calls(my_mock)
     [<Call args=() kwargs={}>, <Call args=('arg1', 'arg2') kwargs={'foo': 'bar'}>]
 
-You can verify specific calls in your tests::
+You can verify that something was called::
 
     >>> from tdubs import verify
     >>> verify(my_mock).called()
     True
+
+    >>> new_mock = Mock('new_mock')
+    >>> verify(new_mock).called()
+    Traceback (most recent call last):
+        ...
+    tdubs.VerificationError: expected <Mock ...> to be called, but it wasn't
+
+You can verify that it was called with specific arguments::
+
     >>> verify(my_mock).called_with('arg1', 'arg2', foo='bar')
     True
     >>> verify(my_mock).called_with('foo')
@@ -247,11 +256,7 @@ You can verify specific calls in your tests::
         ...
     tdubs.VerificationError: expected <Mock ...> to be called with ('foo'), ...
 
-    >>> new_mock = Mock('new_mock')
-    >>> verify(new_mock).called()
-    Traceback (most recent call last):
-        ...
-    tdubs.VerificationError: expected <Mock ...> to be called, but it wasn't
+You can also verify that it was _not_ called::
 
     >>> verify(new_mock).not_called()
     True
@@ -261,6 +266,8 @@ You can verify specific calls in your tests::
     Traceback (most recent call last):
         ...
     tdubs.VerificationError: expected <Mock ...> to not be called, but it was
+
+Or that it was not called with specific arguments::
 
     >>> verify(new_mock).not_called_with('foo')
     True
