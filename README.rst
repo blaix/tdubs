@@ -132,6 +132,145 @@ Installation
 
 Coming soon. For now, just download ``tdubs.py``.
 
+Usage
+-----
+
+Creating stubs
+..............
+
+.. code::
+
+    >>> from tdubs import Stub
+    >>> my_stub = Stub('my_stub')
+
+Attributes
+..........
+
+All attribute and key lookups on a stub will return another stub::
+
+    >>> my_stub.some_attribute
+    <Stub name='some_attribute' ...>
+
+You can define explicit attributes::
+
+    >>> my_stub.some_attribute = 'some value'
+    >>> my_stub.some_attribute
+    'some value'
+
+    >>> my_stub = Stub('my_stub', predefined_attribute='predefined value')
+    >>> my_stub.predefined_attribute
+    'predefined value'
+
+Dictionaries
+............
+
+Key lookups work the same way as attribute lookups::
+
+    >>> my_stub['some_key']
+    <Stub name='some_key' ...>
+    >>> my_stub['some_key'] = 'some dict value'
+    >>> my_stub['some_key']
+    'some dict value'
+
+    >>> my_stub['another_key'].foo = 'foo'
+    >>> my_stub['another_key'].foo
+    'foo'
+
+Callables
+.........
+
+You must explictly make your stub callable. This is to avoid false positives
+in tests for logic that may depend on the truthyness of a return value.
+
+.. code::
+
+    >>> my_stub()
+    Traceback (most recent call last):
+        ...
+    TypeError: <Stub name='my_stub' ...> is not callable ...
+
+    >>> from tdubs import calling
+    >>> calling(my_stub).returns('some return value')
+    >>> my_stub()
+    'some return value'
+
+Since attribute lookups return a stub by default, you can treat your stub like
+an object with callable methods::
+
+    >>> calling(my_stub.some_method).returns('some method result')
+    >>> my_stub.some_method()
+    'some method result'
+
+You can stub calls with specific arguments::
+
+    >>> calling(my_stub).passing('some argument').returns('specific value')
+    >>> my_stub('some argument')
+    'specific value'
+
+When you do, the original stubs are retained::
+
+    >>> my_stub()
+    'some return value'
+
+Mocks
+.....
+
+Mocks have all the functionality of stubs, but they are callable by default,
+and will record calls for verification. If you need to verify calls, use a
+mock::
+
+    >> from tdubs import Mock
+    >>> my_mock = Mock('my_mock')
+
+Any call to a mock will return a new mock::
+
+    >>> my_mock()
+    <Mock ...>
+    >>> my_mock('arg1', 'arg2', foo='bar')
+    <Mock ...>
+
+All calls to a mock are recorded::
+
+    >>> from tdubs import calls
+    >>> calls(my_mock)
+    [<Call args=() kwargs={}>, <Call args=('arg1', 'arg2') kwargs={'foo': 'bar'}>]
+
+You can verify specific calls in your tests::
+
+    >>> from tdubs import verify
+    >>> verify(my_mock).called()
+    True
+    >>> verify(my_mock).called_with('arg1', 'arg2', foo='bar')
+    True
+    >>> verify(my_mock).called_with('foo')
+    Traceback (most recent call last):
+        ...
+    tdubs.VerificationError: expected <Mock ...> to be called with ('foo'), ...
+
+    >>> new_mock = Mock('new_mock')
+    >>> verify(new_mock).called()
+    Traceback (most recent call last):
+        ...
+    tdubs.VerificationError: expected <Mock ...> to be called, but it wasn't
+
+    >>> verify(new_mock).not_called()
+    True
+    >>> new_mock()
+    <Mock ...>
+    >>> verify(new_mock).not_called()
+    Traceback (most recent call last):
+        ...
+    tdubs.VerificationError: expected <Mock ...> to not be called, but it was
+
+    >>> verify(new_mock).not_called_with('foo')
+    True
+    >>> new_mock('foo')
+    <Mock ...>
+    >>> verify(new_mock).not_called_with('foo')
+    Traceback (most recent call last):
+        ...
+    tdubs.VerificationError: expected <Mock ...> to not be called with (...), ...
+
 Development
 -----------
 
