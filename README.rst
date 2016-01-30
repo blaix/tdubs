@@ -136,7 +136,7 @@ mock (see `Stubs vs. Mocks`_ for more details).
 
 .. code::
 
-    >> from tdubs import Mock
+    >>> from tdubs import Mock
     >>> my_mock = Mock('my_mock')
 
 Any call to a mock will return a new mock::
