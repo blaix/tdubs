@@ -1,7 +1,7 @@
 TDubs
 =====
 
-A test double library for python.
+A test double library for python 3.
 
 .. contents::
     :local:
