@@ -276,7 +276,7 @@ but it's not one of the reasons I originally decided to write tdubs.
 Installation
 ------------
 
-Coming soon. For now, just download ``tdubs.py``.
+``pip install tdubs``
 
 Development
 -----------
