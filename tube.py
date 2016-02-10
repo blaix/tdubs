@@ -24,9 +24,7 @@ class Isort(Helper):
 
 class UnitTests(Nosetests):
     def get_args(self, *args, **kwargs):
-        return ['-x', '--with-doctest',
-                '--doctest-options=+ELLIPSIS,+FAIL_FAST',
-                '--doctest-extension=rst']
+        return ['-x', '--doctest-options=+FAIL_FAST']
 
 
 clear = ScreenClearer(all_files=True)

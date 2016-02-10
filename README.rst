@@ -283,13 +283,13 @@ Development
 
 Clone the project.
 
-Install dependencies::
+Install dev dependencies::
 
     pip install -r requirements.txt
 
 Run the tests::
 
-    nosetests --with-doctest --doctest-options=+ELLIPSIS --doctest-extension=rst
+    nosetests
 
 Lint and test the code automatically when changes are made (see ``tube.py``)::
 
