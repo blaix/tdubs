@@ -178,7 +178,8 @@ class Call(object):
         {'bar': 'bar'}
 
         """
-        self.return_value = Mock()
+        self._return_value = Mock()
+        self.exception = None
         self.args = args
         self.kwargs = kwargs
 
@@ -216,6 +217,13 @@ class Call(object):
 
         """
         return (self.args == other.args) and (self.kwargs == other.kwargs)
+
+    @property
+    def return_value(self):
+        """Return assigned return_value, or raise exception if present."""
+        if self.exception:
+            raise self.exception
+        return self._return_value
 
     @property
     def formatted_args(self):
@@ -258,7 +266,25 @@ class Call(object):
         'foo'
 
         """
-        self.return_value = value
+        self._return_value = value
+
+    def raises(self, exception):
+        """Assign an exception to this call.
+
+        >>> call = Call()
+        >>> call.raises(Exception('Blam!'))
+        >>> call.exception
+        Exception('Blam!',)
+
+        Exceptions are raised when trying to access the return value:
+
+        >>> call.return_value
+        Traceback (most recent call last):
+            ...
+        Exception: Blam!
+
+        """
+        self.exception = exception
 
 
 class Verification(object):
