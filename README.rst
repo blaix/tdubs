@@ -237,6 +237,30 @@ Further reading:
 - `The Little Mocker <https://blog.8thlight.com/uncle-bob/2014/05/14/TheLittleMocker.html>`_
 - `Mock Roles, not Objects <http://www.jmock.org/oopsla2004.pdf>`_
 
+Patching Imports
+-----------------
+
+`I personally try to avoid doing this <http://blog.blaix.com/2015/12/04/pythons-patch-decorator-is-a-code-smell/>`_,
+but if you really need to, you can use python's ``patch`` and specify you would like a tdubs double instead of the default ``unittest.mock.MagicMock``:
+``patch('path.to.object', new=Stub('my tdubs stub'))``. For example::
+
+    >>> def yell_a_file(path):
+    ...     try:
+    ...         handle = open(path, 'r')
+    ...         contents = handle.read()
+    ...     finally:
+    ...         handle.close()
+    ...     return contents.upper()
+    ...
+    >>> from unittest.mock import patch
+    >>> with patch('builtins.open', new=Stub('open')) as stubbed_open:
+    ...     handle = Mock('handle')
+    ...     calling(stubbed_open).passing('my_file.txt', 'r').returns(handle)
+    ...     calling(handle.read).returns('file contents')
+    ...     assert yell_a_file('my_file.txt') == 'FILE CONTENTS'
+    ...     verify(handle.close).called()
+    True
+
 Why?
 ----
 
