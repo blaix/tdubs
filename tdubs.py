@@ -255,7 +255,7 @@ class Call(object):
         self.kwargs = kwargs
         return self
 
-    def returns(self, value):
+    def returns(self, value=None):
         """Assign a specific return value to this call.
 
         >>> call = Call()
@@ -264,6 +264,13 @@ class Call(object):
         >>> call.returns('foo')
         >>> call.return_value
         'foo'
+
+        If you just want to make it callable without a return value, you can
+        omit it:
+
+        >>> call.returns()
+        >>> repr(call.return_value)
+        'None'
 
         """
         self._return_value = value
