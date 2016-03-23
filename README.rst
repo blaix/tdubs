@@ -127,6 +127,20 @@ When you do, the original stubs are retained::
     >>> my_stub()
     'some return value'
 
+Exceptions
+..........
+
+Instead of giving your callable a return value, you can tell it to raise an
+exception:
+
+.. code::
+
+    >>> calling(my_stub.kaboom).raises(Exception('Kaboom!'))
+    >>> my_stub.kaboom()
+    Traceback (most recent call last):
+        ...
+    Exception: Kaboom!
+
 Mocks
 .....
 

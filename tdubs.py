@@ -178,7 +178,8 @@ class Call(object):
         {'bar': 'bar'}
 
         """
-        self.return_value = Mock()
+        self._return_value = Mock()
+        self.exception = None
         self.args = args
         self.kwargs = kwargs
 
@@ -218,6 +219,13 @@ class Call(object):
         return (self.args == other.args) and (self.kwargs == other.kwargs)
 
     @property
+    def return_value(self):
+        """Return assigned return_value, or raise exception if present."""
+        if self.exception:
+            raise self.exception
+        return self._return_value
+
+    @property
     def formatted_args(self):
         """Format call arguments as a string.
 
@@ -247,7 +255,7 @@ class Call(object):
         self.kwargs = kwargs
         return self
 
-    def returns(self, value):
+    def returns(self, value=None):
         """Assign a specific return value to this call.
 
         >>> call = Call()
@@ -257,8 +265,33 @@ class Call(object):
         >>> call.return_value
         'foo'
 
+        If you just want to make it callable without a return value, you can
+        omit it:
+
+        >>> call.returns()
+        >>> repr(call.return_value)
+        'None'
+
         """
-        self.return_value = value
+        self._return_value = value
+
+    def raises(self, exception):
+        """Assign an exception to this call.
+
+        >>> call = Call()
+        >>> call.raises(Exception('Blam!'))
+        >>> call.exception
+        Exception('Blam!',)
+
+        Exceptions are raised when trying to access the return value:
+
+        >>> call.return_value
+        Traceback (most recent call last):
+            ...
+        Exception: Blam!
+
+        """
+        self.exception = exception
 
 
 class Verification(object):
