@@ -241,7 +241,7 @@ Patching Imports
 -----------------
 
 `I personally try to avoid doing this <http://blog.blaix.com/2015/12/04/pythons-patch-decorator-is-a-code-smell/>`_,
-but if you really need to, you can use python's ``patch`` and specify you would like a tdubs double instead of the default ``unittest.mock.MagicMock``:
+but if you really want to, you could use python's ``patch`` and specify you would like a tdubs double instead of the default ``unittest.mock.MagicMock`` by passing the ``using`` option to ``patch`` like this:
 ``patch('path.to.object', new=Stub('my tdubs stub'))``. For example::
 
     >>> def yell_a_file(path):
