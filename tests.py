@@ -7,6 +7,7 @@ supported on github: https://github.com/github/markup/issues/172
 More ellaborate tests are in doctests.
 
 """
+from __future__ import print_function
 from unittest import TestCase
 
 from tdubs import Stub, Mock, calling, verify

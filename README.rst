@@ -1,7 +1,7 @@
 TDubs
 =====
 
-A test double library for python 3.
+A test double library for python.
 
 .. contents::
     :local:
@@ -176,7 +176,7 @@ You can verify that something was called::
     >>> verify(new_mock).called()
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Mock ...> to be called, but it wasn't
+    VerificationError: expected <Mock ...> to be called, but it wasn't
 
 You can verify that it was called with specific arguments::
 
@@ -185,7 +185,7 @@ You can verify that it was called with specific arguments::
     >>> verify(my_mock).called_with('foo')
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Mock ...> to be called with ('foo'), ...
+    VerificationError: expected <Mock ...> to be called with ('foo'), ...
 
 You can also verify that it was *not* called::
 
@@ -196,7 +196,7 @@ You can also verify that it was *not* called::
     >>> verify(new_mock).not_called()
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Mock ...> to not be called, but it was
+    VerificationError: expected <Mock ...> to not be called, but it was
 
 Or that it was not called with specific arguments::
 
@@ -207,7 +207,7 @@ Or that it was not called with specific arguments::
     >>> verify(new_mock).not_called_with('foo')
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Mock ...> to not be called with (...), ...
+    VerificationError: expected <Mock ...> to not be called with (...), ...
 
 Stubs vs. Mocks
 ---------------
@@ -252,8 +252,12 @@ but if you really want to, you could use python's ``patch`` and specify you woul
     ...         handle.close()
     ...     return contents.upper()
     ...
-    >>> from unittest.mock import patch
-    >>> with patch('builtins.open', new=Stub('open')) as stubbed_open:
+    >>> try:
+    ...     from unittest.mock import patch
+    ... except ImportError:
+    ...     from mock import patch
+    ...
+    >>> with patch('%s.open' % __name__, new=Stub('open')) as stubbed_open:
     ...     handle = Mock('handle')
     ...     calling(stubbed_open).passing('my_file.txt', 'r').returns(handle)
     ...     calling(handle.read).returns('file contents')
@@ -292,7 +296,11 @@ This is what I wanted out of a test double library:
    Since all attributes on a mock return a new mock, the following
    assertion  will always evaluate to True::
        
-       >>> from unittest import mock
+       >>> try:
+       ...     from unittest import mock
+       ... except ImportError:
+       ...     import mock
+       ...
        >>> mock.Mock().asssert_called_with('foo')  # oops!
        <Mock ...>
 

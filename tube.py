@@ -4,6 +4,7 @@ See: https://github.com/thomasw/testtube
 For flake8, don't forget to install:
 * flake8-quotes
 """
+import doctest
 
 from testtube.helpers import Flake8, Helper, Nosetests
 
@@ -24,7 +25,10 @@ class Isort(Helper):
 
 class UnitTests(Nosetests):
     def get_args(self, *args, **kwargs):
-        return ['-x', '--doctest-options=+FAIL_FAST']
+        args = ['-x']
+        if hasattr(doctest, 'FAIL_FAST'):
+            args.append('--doctest-options=+FAIL_FAST')
+        return args
 
 
 clear = ScreenClearer(all_files=True)
