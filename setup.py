@@ -14,6 +14,10 @@ setup_requires = ['nose==1.3.7', 'coverage==4.0.3']
 if sys.version_info[:2] < (3, 3):
     setup_requires += ['mock==1.3.0']
 
+# coverage doesn't support python 3.2. Coverage reporting will fail in 3.2
+if sys.version_info[:2] == (3, 2):
+    setup_requires.remove('coverage==4.0.3')
+
 setup(
     name='tdubs',
     version='0.2.0',
