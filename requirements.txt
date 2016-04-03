@@ -1,4 +1,6 @@
 # Development dependencies:
+coverage==4.0.3
+coveralls==1.1
 flake8==2.5.0
 flake8-quotes==0.1.1
 isort==4.2.2
