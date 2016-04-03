@@ -105,8 +105,8 @@ Key lookups work the same way as attribute lookups::
 Callables
 .........
 
-You must explictly make your stub callable. This is to avoid false positives
-in tests for logic that may depend on the truthyness of a return value.
+You must explicitly make your stub callable. This is to avoid false positives
+in tests for logic that may depend on the truthiness of a return value.
 
 .. code::
 
@@ -252,7 +252,9 @@ Patching Imports
 -----------------
 
 `I personally try to avoid doing this <http://blog.blaix.com/2015/12/04/pythons-patch-decorator-is-a-code-smell/>`_,
-but if you really want to, you could use python's ``patch`` and specify you would like a tdubs double instead of the default ``unittest.mock.MagicMock`` by passing the ``using`` option to ``patch`` like this:
+but if you really want to, you could use python's ``patch`` and specify you
+would like a tdubs double instead of the default ``unittest.mock.MagicMock``
+by passing the ``using`` option to ``patch`` like this:
 ``patch('path.to.object', new=Stub('my tdubs stub'))``. For example::
 
     >>> def yell_a_file(path):
@@ -306,7 +308,7 @@ This is what I wanted out of a test double library:
 
    Since all attributes on a mock return a new mock, the following
    assertion  will always evaluate to True::
-       
+
        >>> try:
        ...     from unittest import mock
        ... except ImportError:
@@ -318,7 +320,7 @@ This is what I wanted out of a test double library:
    Notice the typo? If not, you may get a false positive in your test.
 
    tdubs avoids this by using a new object for verifications::
-        
+
        >>> from tdubs import Mock, verify
        >>> verify(Mock()).callled_with('foo')  # oops!
        Traceback (most recent call last):
