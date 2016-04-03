@@ -1,1 +1,5 @@
 dist
+.eggs
+*.egg
+*.egg-info
+.coverage
