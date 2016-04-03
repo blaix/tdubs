@@ -1,3 +1,4 @@
+import multiprocessing  # noqa `python setup.py test` fix for python 2.6
 from setuptools import setup
 import sys
 
