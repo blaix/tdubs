@@ -1,15 +1,13 @@
 TDubs
 =====
 
-|Build Status| |Coverage Status| |Latest Version| |Downloads|
+|Build Status| |Coverage Status| |Latest Version|
 
 .. |Build Status| image:: https://img.shields.io/travis/blaix/tdubs.svg
    :target: https://travis-ci.org/blaix/tdubs
 .. |Coverage Status| image:: https://img.shields.io/coveralls/blaix/tdubs.svg
    :target: https://coveralls.io/r/blaix/tdubs
 .. |Latest Version| image:: https://img.shields.io/pypi/v/tdubs.svg
-   :target: https://pypi.python.org/pypi/tdubs/
-.. |Downloads| image:: https://img.shields.io/pypi/dm/tdubs.svg
    :target: https://pypi.python.org/pypi/tdubs/
 
 A test double library for python.
