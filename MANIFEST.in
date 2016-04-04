@@ -1,3 +1,6 @@
+include CHANGELOG.rst
 include LICENSE
 include README.rst
 include requirements.txt
+include setup.cfg
+include tests.py
