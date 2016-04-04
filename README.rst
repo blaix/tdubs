@@ -140,9 +140,7 @@ Exceptions
 ..........
 
 Instead of giving your callable a return value, you can tell it to raise an
-exception:
-
-.. code::
+exception::
 
     >>> calling(my_stub.kaboom).raises(Exception('Kaboom!'))
     >>> my_stub.kaboom()
@@ -155,9 +153,7 @@ Mocks
 
 Mocks have all the functionality of stubs, but they are callable by default,
 and will record calls for verification. So if you need to verify calls, use a
-mock (see `Stubs vs. Mocks`_ for more details).
-
-.. code::
+mock (see `Stubs vs. Mocks`_ for more details)::
 
     >>> from tdubs import Mock
     >>> my_mock = Mock('my_mock')
