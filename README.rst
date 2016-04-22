@@ -1,7 +1,7 @@
 TDubs
 =====
 
-|Build Status| |Coverage Status| |Latest Version|
+|Build Status| |Coverage Status| |Latest Version| |License|
 
 .. |Build Status| image:: https://img.shields.io/travis/blaix/tdubs.svg
    :target: https://travis-ci.org/blaix/tdubs
@@ -9,6 +9,8 @@ TDubs
    :target: https://coveralls.io/r/blaix/tdubs
 .. |Latest Version| image:: https://img.shields.io/pypi/v/tdubs.svg
    :target: https://pypi.python.org/pypi/tdubs/
+.. |License| image:: https://img.shields.io/github/license/mashape/apistatus.svg
+   :target: https://github.com/blaix/tdubs/blob/master/LICENSE
 
 A test double library for python.
 
