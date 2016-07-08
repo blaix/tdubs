@@ -1,6 +1,7 @@
 DEV
 ===
 
+* Renamed ``Mock`` to ``Spy``
 * setup.py now properly indicates all of the depepdencies that are necessary
   to run its commands (test and nosetests were broken)
 * Updated the manifest so that the test suite and the changelog are

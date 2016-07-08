@@ -10,7 +10,7 @@ More ellaborate tests are in doctests.
 from __future__ import print_function
 from unittest import TestCase
 
-from tdubs import Stub, Mock, calling, verify
+from tdubs import Stub, Spy, calling, verify
 
 
 # The thing I want to test:
@@ -34,8 +34,8 @@ class TestGreeter(TestCase):
         calling(prompter).passing('First name:').returns('Justin')
         calling(prompter).passing('Last name:').returns('Blake')
 
-        # use mocks to verify commands:
-        self.printer = Mock()
+        # use spies to verify commands:
+        self.printer = Spy()
 
         self.greeter = Greeter(prompter, self.printer)
 

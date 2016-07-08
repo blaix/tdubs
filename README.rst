@@ -25,7 +25,7 @@ Example
 
     from unittest import TestCase
 
-    from tdubs import Stub, Mock, calling, verify
+    from tdubs import Stub, Spy, calling, verify
 
 
     # The thing I want to test:
@@ -49,8 +49,8 @@ Example
             calling(prompter).passing('First name:').returns('Justin')
             calling(prompter).passing('Last name:').returns('Blake')
 
-            # use mocks to verify commands:
-            self.printer = Mock()
+            # use spies to verify commands:
+            self.printer = Spy()
 
             self.greeter = Greeter(prompter, self.printer)
 
@@ -150,73 +150,73 @@ exception::
         ...
     Exception: Kaboom!
 
-Mocks
+Spies
 .....
 
-Mocks have all the functionality of stubs, but they are callable by default,
+Spies have all the functionality of stubs, but they are callable by default,
 and will record calls for verification. So if you need to verify calls, use a
-mock (see `Stubs vs. Mocks`_ for more details)::
+spy (see `Stubs vs. Spies`_ for more details)::
 
-    >>> from tdubs import Mock
-    >>> my_mock = Mock('my_mock')
+    >>> from tdubs import Spy
+    >>> my_spy = Spy('my_spy')
 
-Any call to a mock will return a new mock::
+Any call to a spy will return a new spy::
 
-    >>> my_mock()
-    <Mock ...>
-    >>> my_mock('arg1', 'arg2', foo='bar')
-    <Mock ...>
+    >>> my_spy()
+    <Spy ...>
+    >>> my_spy('arg1', 'arg2', foo='bar')
+    <Spy ...>
 
-All calls to a mock are recorded::
+All calls to a spy are recorded::
 
     >>> from tdubs import calls
-    >>> calls(my_mock)
+    >>> calls(my_spy)
     [<Call args=() kwargs={}>, <Call args=('arg1', 'arg2') kwargs={'foo': 'bar'}>]
 
 You can verify that something was called::
 
     >>> from tdubs import verify
-    >>> verify(my_mock).called()
+    >>> verify(my_spy).called()
     True
 
-    >>> new_mock = Mock('new_mock')
-    >>> verify(new_mock).called()
+    >>> new_spy = Spy('new_spy')
+    >>> verify(new_spy).called()
     Traceback (most recent call last):
         ...
-    VerificationError: expected <Mock ...> to be called, but it wasn't
+    VerificationError: expected <Spy ...> to be called, but it wasn't
 
 You can verify that it was called with specific arguments::
 
-    >>> verify(my_mock).called_with('arg1', 'arg2', foo='bar')
+    >>> verify(my_spy).called_with('arg1', 'arg2', foo='bar')
     True
-    >>> verify(my_mock).called_with('foo')
+    >>> verify(my_spy).called_with('foo')
     Traceback (most recent call last):
         ...
-    VerificationError: expected <Mock ...> to be called with ('foo'), ...
+    VerificationError: expected <Spy ...> to be called with ('foo'), ...
 
 You can also verify that it was *not* called::
 
-    >>> verify(new_mock).not_called()
+    >>> verify(new_spy).not_called()
     True
-    >>> new_mock()
-    <Mock ...>
-    >>> verify(new_mock).not_called()
+    >>> new_spy()
+    <Spy ...>
+    >>> verify(new_spy).not_called()
     Traceback (most recent call last):
         ...
-    VerificationError: expected <Mock ...> to not be called, but it was
+    VerificationError: expected <Spy ...> to not be called, but it was
 
 Or that it was not called with specific arguments::
 
-    >>> verify(new_mock).not_called_with('foo')
+    >>> verify(new_spy).not_called_with('foo')
     True
-    >>> new_mock('foo')
-    <Mock ...>
-    >>> verify(new_mock).not_called_with('foo')
+    >>> new_spy('foo')
+    <Spy ...>
+    >>> verify(new_spy).not_called_with('foo')
     Traceback (most recent call last):
         ...
-    VerificationError: expected <Mock ...> to not be called with (...), ...
+    VerificationError: expected <Spy ...> to not be called with (...), ...
 
-Stubs vs. Mocks
+Stubs vs. Spies
 ---------------
 
 You should use ``Stub`` when you are testing behavior that depends on the state
@@ -228,21 +228,42 @@ Stubs are not callable by default. You must explicitly stub a return value if
 you expect it to be called. This is to avoid false positives in your tests for
 behavior that may depend on the truthiness of that call.
 
-Mocks *are* callable by default, because they are designed to record calls for
-verification after execution. You should use ``Mock`` when you only need to
+Spies *are* callable by default, because they are designed to record calls for
+verification after execution. You should use ``Spy`` when you only need to
 verify that something was called.  For example, I need to verify whether or not
-``printer`` was called with the correct string, so I'm using a mock.
+``printer`` was called with the correct string, so I'm using a spy.
 
-You can think of it this way: use ``Stub`` for *queries*, and ``Mock`` for
+You can think of it this way: use ``Stub`` for *queries*, and ``Spy`` for
 *commands*.  If the separation isn't clear, spend some time thinking about your
 design. Would it be better with distinct queries and commands? (If you really
-need both, use ``Mock``, since it extends ``Stub``).
+need both, use ``Spy``, since it extends ``Stub``).
 
 Further reading:
 
 - `Mocks aren't Stubs <http://martinfowler.com/articles/mocksArentStubs.html>`_
-- `The Little Mocker <https://blog.8thlight.com/uncle-bob/2014/05/14/TheLittleMocker.html>`_
 - `Mock Roles, not Objects <http://www.jmock.org/oopsla2004.pdf>`_
+
+Note: in the articles above, the concepts attributed to "mocks" also apply to
+"spies" as they are implemented in tdubs.
+
+What about the other types of test doubles?
+--------------------------------------------
+
+`The Little Mocker <https://blog.8thlight.com/uncle-bob/2014/05/14/TheLittleMocker.html>`_
+is a great article by Uncle Bob explaining the different types of test doubles
+and when you would use them. So why does tdubs only implement Stub and Spy?
+
+Short answer: you don't need a library to use the rest.
+
+Here's a rundown of what's missing, when you would use them, and how to
+implement them:
+
+* Dummies: For stand-ins that don't matter to the behavior being tested.
+  Example: extraneous call arguments. Use ``object()``.
+* Fakes: For situations where a double needs some behavior, but it can be
+  faked. Example: an in-memory repository. Code it from scratch.
+* Mocks: Like spies, but call expectations are assigned before execution. Just
+  use a spy (so your tests read as setup => execute => verify).
 
 Patching Imports
 -----------------
@@ -267,7 +288,7 @@ by passing the ``using`` option to ``patch`` like this:
     ...     from mock import patch
     ...
     >>> with patch('%s.open' % __name__, new=Stub('open')) as stubbed_open:
-    ...     handle = Mock('handle')
+    ...     handle = Spy('handle')
     ...     calling(stubbed_open).passing('my_file.txt', 'r').returns(handle)
     ...     calling(handle.read).returns('file contents')
     ...     assert yell_a_file('my_file.txt') == 'FILE CONTENTS'
@@ -291,13 +312,13 @@ This is what I wanted out of a test double library:
    expectations first.  This is so my tests read like a story::
 
         # set up:
-        my_mock = Mock()
+        my_spy = Spy()
 
         # execute:
-        my_func(my_mock)
+        my_func(my_spy)
 
         # verify:
-        verify(my_mock).called()
+        verify(my_spy).called()
 
 3. Test doubles with zero public attributes from the library. This is to avoid
    conflicts with the object being replaced in tests. For example:
@@ -317,15 +338,15 @@ This is what I wanted out of a test double library:
 
    tdubs avoids this by using a new object for verifications::
 
-       >>> from tdubs import Mock, verify
-       >>> verify(Mock()).callled_with('foo')  # oops!
+       >>> from tdubs import Spy, verify
+       >>> verify(Spy()).callled_with('foo')  # oops!
        Traceback (most recent call last):
             ...
        AttributeError: 'Verification' object has no attribute 'callled_with'
 
    Notice the typo? If not, it doesn't matter. Python noticed!
 
-I also like the distinction between stubs and mocks (see `Stubs vs. Mocks`_),
+I also like the distinction between stubs and spies (see `Stubs vs. Spies`_),
 but it's not one of the reasons I originally decided to write tdubs.
 
 Installation

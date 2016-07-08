@@ -118,21 +118,21 @@ class Stub(object):
 calling = Stub._stub_call
 
 
-class Mock(Stub):
+class Spy(Stub):
     """A test double that stands in for a delegate callable in your test.
 
     Provides all the behavior of Stub, but is callable by default, and records
     calls for verification.
 
-    Use a Mock when you are testing behavior that includes delegating to some
+    Use a Spy when you are testing behavior that includes delegating to some
     other callable.
 
     See `README.rst` for details.
 
     """
     def __init__(self, *args, **kwargs):
-        """Initialize a new Mock. See `Stub.__init__` for details."""
-        super(Mock, self).__init__(*args, **kwargs)
+        """Initialize a new Spy. See `Stub.__init__` for details."""
+        super(Spy, self).__init__(*args, **kwargs)
         self._actual_calls = []
 
     def _handle_call(self, actual_call, stubbed_call):
@@ -142,18 +142,18 @@ class Mock(Stub):
         return use_call.return_value
 
     def _get_calls(self):
-        """Return list of call objects for every call made to the mock.
+        """Return list of call objects for every call made to the spy.
 
         This method is private to avoid conflicts with the object being
         replaced in tests. It is accessible via the public api as:
 
-            calls(mock)
+            calls(spy)
 
         """
         return self._actual_calls
 
 
-calls = Mock._get_calls
+calls = Spy._get_calls
 
 
 class Call(object):
@@ -178,7 +178,7 @@ class Call(object):
         {'bar': 'bar'}
 
         """
-        self._return_value = Mock()
+        self._return_value = Spy()
         self.exception = None
         self.args = args
         self.kwargs = kwargs
@@ -260,7 +260,7 @@ class Call(object):
 
         >>> call = Call()
         >>> call.return_value
-        <Mock ...>
+        <Spy ...>
         >>> call.returns('foo')
         >>> call.return_value
         'foo'
@@ -295,76 +295,76 @@ class Call(object):
 
 
 class Verification(object):
-    """Verification objects are used to verify mocked calls.
+    """Verification objects are used to verify calls.
 
     See `README.rst` for details.
 
     """
-    def __init__(self, mock):
-        """Initialize with a mock.
+    def __init__(self, spy):
+        """Initialize with a spy.
 
-        >>> mock = Mock('my mock')
-        >>> Verification(mock)
-        <Verification mock=<Mock name='my mock' ...>>
+        >>> spy = Spy('my spy')
+        >>> Verification(spy)
+        <Verification spy=<Spy name='my spy' ...>>
 
         It is also available as `verify` to make tests read better.
 
-        >>> verify(mock)
-        <Verification mock=<Mock name='my mock' ...>>
+        >>> verify(spy)
+        <Verification spy=<Spy name='my spy' ...>>
 
         """
-        self.mock = mock
+        self.spy = spy
 
     def __repr__(self):
-        """Represent a verification by the mock it's wrapping."""
-        return '<Verification mock=%s>' % self.mock
+        """Represent a verification by the spy it's wrapping."""
+        return '<Verification spy=%s>' % self.spy
 
     def called(self):
-        """Return True if the mock was called.
+        """Return True if the spy was called.
 
         Otherwise raise VerificationError.
 
         """
-        if calls(self.mock):
+        if calls(self.spy):
             return True
         raise VerificationError(
-            "expected %s to be called, but it wasn't" % self.mock)
+            "expected %s to be called, but it wasn't" % self.spy)
 
     def called_with(self, *args, **kwargs):
-        """Return True if the mock was called with the specified args/kwargs.
+        """Return True if the spy was called with the specified args/kwargs.
 
         Otherwise raise VerificationError.
 
         """
         expected_call = Call(*args, **kwargs)
-        if expected_call in calls(self.mock):
+        if expected_call in calls(self.spy):
             return True
         raise VerificationError(
             "expected %s to be called with %s, but it wasn't" % (
-                self.mock, expected_call.formatted_args))
+                self.spy, expected_call.formatted_args))
 
     def not_called(self):
-        """Return True if the mock was not called.
+        """Return True if the spy was not called.
 
         Otherwise raise VerificationError.
 
         """
-        if calls(self.mock):
+        if calls(self.spy):
             raise VerificationError(
-                'expected %s to not be called, but it was' % self.mock)
+                'expected %s to not be called, but it was' % self.spy)
         return True
 
     def not_called_with(self, *args, **kwargs):
-        """Return True if mock was not called with the specified args/kwargs.
+        """Return True if spy was not called with the specified args/kwargs.
 
         Otherwise raise VerificationError.
 
         """
         call = Call(*args, **kwargs)
-        if call in calls(self.mock):
+        if call in calls(self.spy):
             raise VerificationError(
                 'expected %s to not be called with %s, but it was' % (
-                    self.mock, call.formatted_args))
+                    self.spy, call.formatted_args))
         return True
 
 verify = Verification
