@@ -36,6 +36,6 @@ lint_style = Flake8(all_files=True)
 unit_tests = UnitTests(all_files=True)
 
 PATTERNS = (
-    (r'.*\.(py|rst)$', [clear, unit_tests], {'fail_fast': True}),
+    (r'.*\.(py|rst|cfg)$', [clear, unit_tests], {'fail_fast': True}),
     (r'.*\.py$', [lint_style], {'fail_fast': True}),
 )
