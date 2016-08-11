@@ -1,5 +1,5 @@
-DEV
-===
+0.3.0
+======
 
 * Renamed ``Mock`` to ``Spy``
 * setup.py now properly indicates all of the depepdencies that are necessary

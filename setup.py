@@ -10,7 +10,7 @@ setup_requires = ['nose==1.3.7', 'coverage==4.0.3']
 
 setup(
     name='tdubs',
-    version='0.2.0',
+    version='0.3.0',
     url='https://github.com/blaix/tdubs',
     author='Justin Blake',
     author_email='justin@blaix.com',
