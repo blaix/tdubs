@@ -3,9 +3,9 @@ TDubs
 
 |Build Status| |Coverage Status| |Latest Version| |License|
 
-.. |Build Status| image:: https://img.shields.io/travis/blaix/tdubs.svg
+.. |Build Status| image:: https://img.shields.io/travis/blaix/tdubs/master.svg
    :target: https://travis-ci.org/blaix/tdubs
-.. |Coverage Status| image:: https://img.shields.io/coveralls/blaix/tdubs.svg
+.. |Coverage Status| image:: https://img.shields.io/coveralls/blaix/tdubs/master.svg
    :target: https://coveralls.io/r/blaix/tdubs
 .. |Latest Version| image:: https://img.shields.io/pypi/v/tdubs.svg
    :target: https://pypi.python.org/pypi/tdubs/
