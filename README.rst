@@ -183,7 +183,7 @@ You can verify that something was called::
     >>> verify(new_spy).called()
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Spy ...> to be called, but it wasn't
+    tdubs.verifications.VerificationError: expected <Spy ...> to be called, but it wasn't
 
 You can verify that it was called with specific arguments::
 
@@ -192,7 +192,7 @@ You can verify that it was called with specific arguments::
     >>> verify(my_spy).called_with('foo')
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Spy ...> to be called with ('foo'), ...
+    tdubs.verifications.VerificationError: expected <Spy ...> to be called with ('foo'), ...
 
 You can also verify that it was *not* called::
 
@@ -203,7 +203,7 @@ You can also verify that it was *not* called::
     >>> verify(new_spy).not_called()
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Spy ...> to not be called, but it was
+    tdubs.verifications.VerificationError: expected <Spy ...> to not be called, but it was
 
 Or that it was not called with specific arguments::
 
@@ -214,7 +214,7 @@ Or that it was not called with specific arguments::
     >>> verify(new_spy).not_called_with('foo')
     Traceback (most recent call last):
         ...
-    tdubs.VerificationError: expected <Spy ...> to not be called with ('foo'), but it was
+    tdubs.verifications.VerificationError: expected <Spy ...> to not be called with ('foo'), but it was
 
 Stubs vs. Spies
 ---------------
