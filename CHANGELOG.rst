@@ -1,3 +1,8 @@
+DEV
+====
+
+* Add ``patch.stub`` and ``patch.spy``
+
 0.3.0
 ======
 

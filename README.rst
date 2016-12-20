@@ -269,31 +269,27 @@ Patching Imports
 -----------------
 
 `I personally try to avoid doing this <http://blog.blaix.com/2015/12/04/pythons-patch-decorator-is-a-code-smell/>`_,
-but if you really want to, you could use python's ``patch`` and specify you
-would like a tdubs double instead of the default ``unittest.mock.MagicMock``
-by passing the ``using`` option to ``patch`` like this:
-``patch('path.to.object', new=Stub('my tdubs stub'))``. For example::
+but sometimes the trade-offs make sense, so tdubs has a ``patch`` module with
+thin wrappers around ``unittest.mock.patch``.  They work the same way, but give
+you a ``tdubs.Stub`` or ``tdubs.Spy`` instead of a
+``unittest.mock.MagicMock``::
 
-    >>> def yell_a_file(path):
-    ...     try:
-    ...         handle = open(path, 'r')
-    ...         contents = handle.read()
-    ...     finally:
-    ...         handle.close()
-    ...     return contents.upper()
-    ...
-    >>> try:
-    ...     from unittest.mock import patch
-    ... except ImportError:
-    ...     from mock import patch
-    ...
-    >>> with patch('%s.open' % __name__, new=Stub('open')) as stubbed_open:
-    ...     handle = Spy('handle')
-    ...     calling(stubbed_open).passing('my_file.txt', 'r').returns(handle)
-    ...     calling(handle.read).returns('file contents')
-    ...     assert yell_a_file('my_file.txt') == 'FILE CONTENTS'
-    ...     verify(handle.close).called()
+    >>> from tdubs import patch
+
+    >>> with patch.stub('%s.open' % __name__) as open_stub:
+    ...     calling(open_stub).passing('file', 'r').returns('file handle')
+    ...     open('file', 'r')
+    'file handle'
+
+    >>> with patch.spy('%s.print' % __name__) as print_spy:
+    ...     print('Hello!')
+    <Spy ...>
+    >>> verify(print_spy).called_with('Hello!')
     True
+
+Since these wrap ``unittest.mock.patch``, you can see
+`python's patch documentation <https://docs.python.org/3/library/unittest.mock.html#patch>`_
+for full usage information.
 
 Why?
 ----
