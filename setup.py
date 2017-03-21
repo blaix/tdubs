@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 # We need the following dependenices so that setup.py's command nosetests will
 # run correclty without manually installing all dev dependencies. Note that
@@ -15,7 +15,7 @@ setup(
     author='Justin Blake',
     author_email='justin@blaix.com',
     description='A test double library',
-    py_modules=['tdubs'],
+    packages=find_packages(),
     setup_requires=setup_requires,
     license='MIT (Expat)',
     classifiers=[
