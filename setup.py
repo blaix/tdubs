@@ -38,6 +38,7 @@ setup(
             'coveralls',
             'flake8',
             'flake8-quotes',
+            'flake8-bugbear',
             'isort',
             'nose',
             'pep8',
