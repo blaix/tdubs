@@ -84,4 +84,5 @@ class Verification(object):
                     self.spy, call.formatted_args))
         return True
 
+
 verify = Verification
