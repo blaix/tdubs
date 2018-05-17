@@ -357,7 +357,7 @@ Clone the project.
 
 Install dev dependencies::
 
-    pip install -r requirements.txt
+    pip install -e .[dev]
 
 Run the tests::
 

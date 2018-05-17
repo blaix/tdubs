@@ -31,5 +31,19 @@ setup(
     # The following allows the test command to find and execute unit tests
     # but not any of the doc tests. Use the nosetests command to run the full
     # test suite.
-    test_suite='nose.collector'
+    test_suite='nose.collector',
+    extras_require={
+        'dev': [
+            'coverage',
+            'coveralls',
+            'flake8',
+            'flake8-quotes',
+            'isort',
+            'nose',
+            'pep8',
+            'testtube',
+            'twine',
+            'wheel',
+        ],
+    },
 )
